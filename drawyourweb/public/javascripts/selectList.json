@@ -1,0 +1,25 @@
+{
+    "selectOptions" : [
+        {
+            "name":"div",
+            "value":"Div"
+        },
+        {
+            "name":"button",
+            "value":"Button"
+        },
+        {
+            "name":"paragraph",
+            "value":"Paragraph"
+        },
+        {
+            "name":"image",
+            "value":"Image"
+        },
+        {
+            "name":"label",
+            "value":"Label"
+        }
+        
+    ]
+}
