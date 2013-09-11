@@ -157,13 +157,27 @@ function createImage(){
         'width':'450px',
         'height':'500px'
     });
-    newImage.draggable({ containment: $("#wireSpace"), scroll: false });    
-    var confirmImage = createModalDialog('file', 'Select a Picture');
+    newImage.draggable({ containment: $("#wireSpace"), scroll: false }); 
+
+    var imageLabel = $(document.createElement('label'));
+    imageLabel.text('Select an image');
+    var imageInput = $(document.createElement('input'));
+    imageInput.attr({'id':'infoInput', "type":"file", "name":"objectSelect"});
+
+    options = {};
+    options.imageLabel = imageLabel;
+    options.imageInput = imageInput;
+    var confirmImage = createModalUpgrade(options,{
+        url:null,
+        repeat:null,
+        bgSize:null        
+    });
+
     confirmImage.infoAcceptButton.on('click', function(){
-        newImage.attr({"src":confirmImage.infoDetails.url});
+        newImage.attr({"src":confirmImage.details.url});
         newImage.css({
-            "background-size":confirmImage.infoDetails.bgSize, 
-            "background-repeat":confirmImage.infoDetails.repeat
+            "background-size":confirmImage.details.bgSize, 
+            "background-repeat":confirmImage.details.repeat
         });
         newImage.on('click', function(){
             $('.highlight').removeClass('highlight');
@@ -179,7 +193,50 @@ function createImage(){
         });
         $("#wireSpace").append(newImage);          
         $('#infoForm').remove();       
-    });}
+    });
+}
+function createVideo(){
+
+    videoDiv = $(document.createElement('div'));
+    videoDiv.css({
+        "position":"absolute"
+    });
+    videoDiv.draggable({ containment: $("#wireSpace"), scroll: false });        
+    videoDiv.resizable({
+        helper: "ui-resizable-helper"
+    });   
+
+    var videoLabel = $(document.createElement('label'));
+    videoLabel.text('Write the embeded code right here');
+    var videoInput = $(document.createElement('textarea'));
+    videoInput.attr({'id':'videoInput', "rows":"2", "cols":"17"});
+
+    options = {};
+    options.videoLabel = videoLabel;
+    options.videoInput = videoInput;
+
+    var confirmVideo = createModalUpgrade(options);
+    confirmVideo.infoAcceptButton.on('click', function(){
+
+        videoDiv.attr('id','player');
+        videoDiv.on('click', function(){
+            $('.highlight').removeClass('highlight');
+            verifySettingsExistence();
+            var element = $(this);
+            element.addClass("highlight"); 
+            var videoSettingsContainer = $(document.createElement('div'));
+            videoSettingsContainer.attr('id','settingsBox');
+            $('#settings').append(videoSettingsContainer);
+            createSizeSettings(element);
+            removeButton(element, $('#settingsBox'));
+        });
+        $("#wireSpace").append(videoDiv);        
+        $('#player').youTubeEmbed(confirmVideo.videoInput.val());
+        $('#infoForm').remove();       
+    });
+
+
+}
 
 /*------------------FUNCIONES EXTRA-----------------------*/
 
@@ -524,49 +581,42 @@ function removeButton(ele, settings){
 function verifySettingsExistence(){
     var settings = $(document.getElementById('settingsBox'));
     settings.remove();}
+
 //Funcion que crea Dialogos Modales
-function createModalDialog(tipo, texto){
-    var dialogModal = {
-            infoForm: $(document.createElement('div')),
-            infoContainer: $(document.createElement('div')),
-            infoLabel: $(document.createElement('label')),
-            infoInput: $(document.createElement('input')),
-            infoAcceptButton: $(document.createElement('button')),
-            infoDeclineButton: $(document.createElement('button')),
-            infoDetails:{
-                url:null,
-                repeat:null,
-                bgSize:null
-            }
-        }
-        //Contenedor del Dialog Modal
-        dialogModal.infoForm.attr({'id':'infoForm'});
-        dialogModal.infoForm.addClass('modalDialog');
-        dialogModal.infoContainer.attr('id', 'infoContainer');
+function createModalUpgrade(options, details){
+    if(details === undefined){
+        details = {};
+    }
+    var modal = {};
+    modal.infoForm = $(document.createElement('div'));
+    modal.infoContainer = $(document.createElement('div'));
+    options.infoAcceptButton = $(document.createElement('button'));
+    options.infoDeclineButton = $(document.createElement('button'));
 
-        //Info Label and input
-        dialogModal.infoLabel.text(texto);
-        dialogModal.infoInput.attr({'id':'infoInput', 'type':tipo, "name":"objectSelect"});
 
-        //Info Button
-        dialogModal.infoAcceptButton.text('Confirm');
-        dialogModal.infoAcceptButton.attr({'id':'infoAcceptButton'});
-        dialogModal.infoDeclineButton.text('Decline');
-        dialogModal.infoDeclineButton.attr({'id':'infoDeclineButton'});
+    modal.infoForm.attr({'id':'infoForm'});
+    modal.infoForm.addClass('modalDialog');
+    modal.infoContainer.attr('id', 'infoContainer');
 
-        //Agregado del Modal
-        dialogModal.infoContainer.append(dialogModal.infoLabel);
-        dialogModal.infoContainer.append(dialogModal.infoInput);
-        dialogModal.infoContainer.append(dialogModal.infoAcceptButton);
-        dialogModal.infoContainer.append(dialogModal.infoDeclineButton);
-        dialogModal.infoForm.append(dialogModal.infoContainer);
-        $("#wireSpace").append(dialogModal.infoForm);        
+    //Info Button
+    options.infoAcceptButton.text('Confirm');
+    options.infoAcceptButton.attr({'id':'infoAcceptButton'});
+    options.infoDeclineButton.text('Decline');
+    options.infoDeclineButton.attr({'id':'infoDeclineButton'});
 
-        dialogModal.infoDeclineButton.on('click', function(){
-            dialogModal.infoForm.remove();
-        });
+    for(var key in options){
+        modal.infoContainer.append(options[key]);
+    }
+    modal.infoForm.append(modal.infoContainer);
+    
+    $("#wireSpace").append(modal.infoForm);
 
-        $("input[name='objectSelect']").on('change', function(){
+    options.infoDeclineButton.on('click', function(){
+        modal.infoForm.remove();
+    });
+    options.details = details;
+
+    $("input[name='objectSelect']").on('change', function(){
             //setBackgroundImage(desireElement);
             var files = this.files ? this.files : [];
             // Si ningun archivo fue seleccionado o no hay soporte del fileReader haga un return vacio
@@ -580,17 +630,15 @@ function createModalDialog(tipo, texto){
                 reader.readAsDataURL( files[0] );
 
                 // Cuando esta cargado, establece la imagen como fondo del elemento
-                reader.onloadend = function(){
-                    
-                    dialogModal.infoDetails.url = this.result;
-                    dialogModal.infoDetails.repeat = "no-repeat";
-                    dialogModal.infoDetails.bgSize = "100%";                              
+                reader.onloadend = function(){                    
+                    options.details.url = this.result;
+                    options.details.repeat = "no-repeat";
+                    options.details.bgSize = "100%";                             
                 }
             }
         });
-
-        return dialogModal;}
-
+    return options;    
+}
 
 /*--------------------------------FUNCIONES DE COMPORTAMIENTO-------------------------------*/
 

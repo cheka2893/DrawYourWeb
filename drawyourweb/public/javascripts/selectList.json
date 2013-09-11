@@ -19,6 +19,10 @@
         {
             "name":"label",
             "value":"Label"
+        },
+        {
+            "name":"video",
+            "value":"Video"
         }
         
     ]

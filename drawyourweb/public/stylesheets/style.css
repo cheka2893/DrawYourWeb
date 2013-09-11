@@ -133,6 +133,10 @@ input{
 	font-size: 1.8em;
 }
 
+#backgroundImageButton{
+	margin-bottom: 10px;
+}
+
 
 
 @media only screen 
