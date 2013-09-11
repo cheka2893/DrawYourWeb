@@ -246,20 +246,30 @@ function setLineHeight(ele, size){
 function setBackgroundImage(ele, settings){
     var imageChooser = {
         backgroundImageLabel: $(document.createElement('label')),
-        backgroundImageButton: $(document.createElement('input'))
+        backgroundImageButton: $(document.createElement('input')),
+        backgroundWriteLabel: $(document.createElement('label')),
+        backgroundImageInput: $(document.createElement('input'))
     }
 
     //Background Image Chooser
 
-        imageChooser.backgroundImageLabel.html('Background-Image Chooser');
+        imageChooser.backgroundImageLabel.text('Background-Image Chooser');
+        imageChooser.backgroundWriteLabel.text('Background-Image URL');
         imageChooser.backgroundImageButton.attr({
             "id":"backgroundImageButton",
             "type":"file",
             "name":"myFileSelect"
         });
+        imageChooser.backgroundImageInput.attr({
+            "id":"backgroundImageInput",
+            "type":"text",
+            "name":"outerImageSelect"
+        });
 
         settings.append(imageChooser.backgroundImageLabel);
         settings.append(imageChooser.backgroundImageButton);
+        settings.append(imageChooser.backgroundWriteLabel);
+        settings.append(imageChooser.backgroundImageInput);
 
         //Funcion de Background-Image
         $("input[name='myFileSelect']").on('change', function(){
@@ -288,8 +298,16 @@ function setBackgroundImage(ele, settings){
                     }
                                
                 }
-            }
-        });}
+            }});
+
+        imageChooser.backgroundImageInput.on('change', function(){
+            ele.css({
+                "background-image":"url("+ imageChooser.backgroundImageInput.val() +")",
+                "background-repeat":"no-repeat",
+                "background-size":"100%"
+            });
+        });      
+}
 
 /*------------------FUNCIONES PARA CONSTRUCCION DE OBJETOS O VERIFICACIONES-----------------------*/
 
