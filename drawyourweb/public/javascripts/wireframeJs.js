@@ -121,9 +121,18 @@ function createParagraph(){
     if(document.getElementById('infoForm') === null || document.getElementById('infoForm') === undefined){
         var newParag = $(document.createElement("p"));
         var confirmText = "How many paragraphs would you like to write";
-        var DialogConfirmation = createModalDialog('text', confirmText);
 
-        DialogConfirmation.infoAcceptButton.on('click', function(){       
+        var paraLabel = $(document.createElement('label'));
+        paraLabel.text('Write how many paragraphs you need');
+        var paraInput = $(document.createElement('input'));
+        paraInput.attr({'id':'infoInput', "type":"text", "name":"objectSelect"});
+
+        options = {};
+        options.paraLabel = paraLabel;
+        options.paraInput = paraInput;
+
+        var DialogConfirmation = createModalUpgrade(options);
+        DialogConfirmation.infoAcceptButton.on('click', function(){      
         
             newParag.css({
                 position:"absolute", 
@@ -151,6 +160,7 @@ function createParagraph(){
         
     }}
 function createImage(){
+ if(document.getElementById('infoForm') === null || document.getElementById('infoForm') === undefined){
     var newImage = $(document.createElement('img'));
     newImage.css({
         'position':'absolute',
@@ -193,10 +203,9 @@ function createImage(){
         });
         $("#wireSpace").append(newImage);          
         $('#infoForm').remove();       
-    });
-}
+    });}}
 function createVideo(){
-
+ if(document.getElementById('infoForm') === null || document.getElementById('infoForm') === undefined){
     videoDiv = $(document.createElement('div'));
     videoDiv.css({
         "position":"absolute"
@@ -233,10 +242,7 @@ function createVideo(){
         $("#wireSpace").append(videoDiv);        
         $('#player').youTubeEmbed(confirmVideo.videoInput.val());
         $('#infoForm').remove();       
-    });
-
-
-}
+    });}}
 
 /*------------------FUNCIONES EXTRA-----------------------*/
 

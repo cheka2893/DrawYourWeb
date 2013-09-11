@@ -1,0 +1,24 @@
+extends layout
+
+block content
+ div(id="bootScreen")
+  div(id="bootInfoContainer")
+   h1 Welcome to Draw Your Web
+   p   With this app you can create a model of how do you want your web site looks like <br>
+     | This app was made to make easier the work of modeling web sites for our clients <br>
+     | And when it's finished avoid using photoshop for modeling. <br>
+
+   h3 Controlls
+   p With Shift + A you can copy a selected element.
+     |To select an element you have to click on him and red borders will appear <br>
+     |You can drag the elements or resize most of them. <br>
+     |Set background-Images or make Images. <br>
+
+   h1 HAVE FUN --->  Click to vanish
+ div(id="wrapper") 
+  div(id="tools")
+   div(class="toolBox")
+    select
+    button(onclick="makeOption()") Make
+   div(id="settings")
+  div(id="wireSpace")
